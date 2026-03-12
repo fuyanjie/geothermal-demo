@@ -1,0 +1,23 @@
+.ts-chart {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+}
+
+.ts-chart .recharts-responsive-container {
+  flex: 1;
+  min-height: 0;
+}
+
+.ts-chart-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  padding: 0 4px 4px;
+}
+
+.ts-chart-unit {
+  font-weight: 400;
+  opacity: 0.7;
+}

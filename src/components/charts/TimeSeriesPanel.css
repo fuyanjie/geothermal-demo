@@ -1,0 +1,14 @@
+.ts-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 140px 140px;
+  gap: 4px 8px;
+  padding: 4px 8px;
+}
+
+@media (max-width: 500px) {
+  .ts-panel {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(4, 120px);
+  }
+}

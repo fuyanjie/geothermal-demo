@@ -1,0 +1,66 @@
+.dashboard {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  padding: 16px;
+  gap: 16px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 320px 340px;
+  grid-template-areas:
+    'map subsurface'
+    'charts charts';
+  gap: 16px;
+}
+
+.panel {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.panel-map {
+  grid-area: map;
+}
+
+.panel-3d {
+  grid-area: subsurface;
+}
+
+.panel-charts {
+  grid-area: charts;
+}
+
+.panel-header {
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.panel-body {
+  flex: 1;
+  position: relative;
+  min-height: 0;
+}
+
+@media (max-width: 900px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+      'map'
+      'subsurface'
+      'charts';
+  }
+}

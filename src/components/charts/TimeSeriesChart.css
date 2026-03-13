@@ -21,3 +21,14 @@
   font-weight: 400;
   opacity: 0.7;
 }
+
+.ts-chart-nodata {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  opacity: 0.4;
+  font-style: italic;
+}

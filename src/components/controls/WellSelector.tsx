@@ -12,7 +12,7 @@ export default function WellSelector() {
         {wells.map((w) => (
           <button
             key={w.id}
-            className={`well-btn ${w.id === selectedWellId ? 'active' : ''} ${w.type === 'injection' ? 'injection' : 'production'}`}
+            className={`well-btn ${w.id === selectedWellId ? 'active' : ''} ${w.type}`}
             onClick={() => setSelectedWellId(w.id)}
             title={`${w.name} (${w.type})`}
           >

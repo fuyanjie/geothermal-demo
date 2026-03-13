@@ -12,7 +12,7 @@ export default function Header() {
       <div className="header-left">
         <h2 className="header-title">Data Explorer</h2>
         <span className="header-separator">—</span>
-        <span className="header-location">Salton Sea Geothermal Field, California</span>
+        <span className="header-location">Brady Hot Springs Geothermal Field, Nevada</span>
       </div>
       <div className="header-right">
         {well && <span className="header-well">{well.name}</span>}

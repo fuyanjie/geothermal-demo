@@ -5,10 +5,10 @@ export interface TimeSeriesPoint {
 
 export interface WellTimeSeries {
   wellId: string;
-  productionRate: TimeSeriesPoint[];
-  injectionRate: TimeSeriesPoint[];
-  temperature: TimeSeriesPoint[];
-  pressure: TimeSeriesPoint[];
+  extractionFlow?: TimeSeriesPoint[];
+  injectionFlow?: TimeSeriesPoint[];
+  temperature?: TimeSeriesPoint[];
+  pressure?: TimeSeriesPoint[];
 }
 
-export type TimeSeriesField = 'productionRate' | 'injectionRate' | 'temperature' | 'pressure';
+export type TimeSeriesField = 'extractionFlow' | 'injectionFlow' | 'temperature' | 'pressure';

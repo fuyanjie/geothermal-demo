@@ -2,69 +2,78 @@ import { useAppState } from '../../context/AppStateContext';
 import { wells } from '../../data';
 import './SiteOverviewMap.css';
 
-// Simplified Salton Sea outline (approximate SVG coordinates in a 400x400 viewport)
-const SALTON_SEA_PATH =
-  'M 120,40 Q 80,100 70,180 Q 65,240 80,300 Q 100,350 140,370 Q 180,385 220,380 Q 280,370 310,330 Q 340,280 340,220 Q 335,150 310,100 Q 280,55 240,40 Q 180,25 120,40 Z';
-
-// Geothermal field boundary (smaller polygon near south end)
+// Brady Hot Springs field boundary (elongated NNE-SSW along the fault)
+// The field spans ~8km N-S along the Brady fault zone
 const FIELD_BOUNDARY =
-  'M 170,250 L 210,240 L 260,255 L 270,290 L 250,320 L 200,330 L 170,310 Z';
+  'M 160,30 L 200,20 L 240,30 L 260,80 L 270,160 L 265,250 L 250,320 L 230,360 L 190,380 L 160,370 L 140,320 L 130,250 L 135,160 L 145,80 Z';
 
-// Map well lat/lon to SVG coordinates (simple affine mapping)
+// Map well lat/lon to SVG coordinates (affine mapping for Brady area)
 function wellToSvg(lat: number, lon: number): { x: number; y: number } {
-  const latMin = 33.175;
-  const latMax = 33.235;
-  const lonMin = -115.635;
-  const lonMax = -115.565;
+  // Brady wells span approximately:
+  // Lat: 39.747 (73-25, southernmost) to 39.811 (18B-31, northernmost)
+  // Lon: -119.022 (82A-11, westernmost) to -119.000 (18B-31, easternmost)
+  const latMin = 39.744;
+  const latMax = 39.815;
+  const lonMin = -119.025;
+  const lonMax = -118.997;
 
-  const x = 150 + ((lon - lonMin) / (lonMax - lonMin)) * 140;
-  const y = 340 - ((lat - latMin) / (latMax - latMin)) * 140;
+  const x = 40 + ((lon - lonMin) / (lonMax - lonMin)) * 320;
+  const y = 390 - ((lat - latMin) / (latMax - latMin)) * 380;
   return { x, y };
+}
+
+function wellColor(type: string, isSelected: boolean): string {
+  if (isSelected) return 'var(--color-accent)';
+  if (type === 'injection') return '#81c784';
+  if (type === 'observation') return '#ffd54f';
+  return '#4fc3f7'; // pumping
 }
 
 export default function SiteOverviewMap() {
   const { selectedWellId, setSelectedWellId } = useAppState();
 
   return (
-    <svg className="site-map" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet">
-      {/* Water */}
-      <path d={SALTON_SEA_PATH} fill="rgba(30, 80, 130, 0.4)" stroke="rgba(60, 140, 200, 0.5)" strokeWidth="1.5" />
-      <text x="190" y="160" textAnchor="middle" className="map-label-water">
-        Salton Sea
-      </text>
-
-      {/* Geothermal field */}
+    <svg className="site-map" viewBox="0 0 400 420" preserveAspectRatio="xMidYMid meet">
+      {/* Geothermal field boundary */}
       <path
         d={FIELD_BOUNDARY}
-        fill="rgba(255, 107, 53, 0.1)"
+        fill="rgba(255, 107, 53, 0.08)"
         stroke="var(--color-accent)"
         strokeWidth="1.5"
         strokeDasharray="6 3"
       />
-      <text x="220" y="275" textAnchor="middle" className="map-label-field">
-        Geothermal Field
+      <text x="295" y="200" textAnchor="middle" className="map-label-field">
+        Brady
+      </text>
+      <text x="295" y="215" textAnchor="middle" className="map-label-field">
+        Hot Springs
+      </text>
+
+      {/* Fault line (approximate NNE-SSW trend) */}
+      <line x1={180} y1={15} x2={210} y2={395} stroke="rgba(255,100,100,0.3)" strokeWidth="2" strokeDasharray="8 4" />
+      <text x={185} y={405} textAnchor="middle" style={{ fontSize: '9px', fill: 'rgba(255,100,100,0.5)' }}>
+        Brady Fault
       </text>
 
       {/* Wells */}
       {wells.map((w) => {
         const { x, y } = wellToSvg(w.latitude, w.longitude);
         const isSelected = w.id === selectedWellId;
-        const isInjection = w.type === 'injection';
         return (
           <g key={w.id} onClick={() => setSelectedWellId(w.id)} style={{ cursor: 'pointer' }}>
             <circle
               cx={x}
               cy={y}
               r={isSelected ? 8 : 5}
-              fill={isSelected ? 'var(--color-accent)' : isInjection ? '#81c784' : '#4fc3f7'}
+              fill={wellColor(w.type, isSelected)}
               stroke={isSelected ? '#fff' : 'none'}
               strokeWidth={2}
               opacity={isSelected ? 1 : 0.8}
             />
             <text
-              x={x}
-              y={y - (isSelected ? 12 : 9)}
-              textAnchor="middle"
+              x={x + 10}
+              y={y + 3}
+              textAnchor="start"
               className={`map-label-well ${isSelected ? 'selected' : ''}`}
             >
               {w.name}
@@ -74,11 +83,13 @@ export default function SiteOverviewMap() {
       })}
 
       {/* Legend */}
-      <g transform="translate(10, 360)">
-        <circle cx={8} cy={0} r={4} fill="#4fc3f7" />
-        <text x={16} y={4} className="map-legend-text">Production</text>
-        <circle cx={90} cy={0} r={4} fill="#81c784" />
-        <text x={98} y={4} className="map-legend-text">Injection</text>
+      <g transform="translate(10, 415)">
+        <circle cx={8} cy={-6} r={4} fill="#4fc3f7" />
+        <text x={16} y={-2} className="map-legend-text">Pumping</text>
+        <circle cx={78} cy={-6} r={4} fill="#81c784" />
+        <text x={86} y={-2} className="map-legend-text">Injection</text>
+        <circle cx={158} cy={-6} r={4} fill="#ffd54f" />
+        <text x={166} y={-2} className="map-legend-text">Observation</text>
       </g>
 
       {/* North arrow */}

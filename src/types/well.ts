@@ -1,7 +1,7 @@
 export interface WellMetadata {
   id: string;
   name: string;
-  type: 'production' | 'injection';
+  type: 'pumping' | 'injection' | 'observation';
   latitude: number;
   longitude: number;
   depthMeters: number;

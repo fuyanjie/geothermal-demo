@@ -1,18 +1,18 @@
 import { useAppState } from '../../context/AppStateContext';
 import { wells } from '../../data';
-import { SALTON_SEA } from '../../data/constants';
+import { BRADY } from '../../data/constants';
 
 export default function WellCylinders() {
   const { selectedWellId } = useAppState();
-  const { nz } = SALTON_SEA.grid;
+  const { nz } = BRADY.grid;
 
   return (
     <group>
       {wells.map((w) => {
         const isSelected = w.id === selectedWellId;
-        const height = ((w.depthMeters - SALTON_SEA.depthTop) / (SALTON_SEA.depthBottom - SALTON_SEA.depthTop)) * nz;
+        const height = Math.max(1, ((w.depthMeters - BRADY.depthTop) / (BRADY.depthBottom - BRADY.depthTop)) * nz);
         const radius = isSelected ? 0.4 : 0.2;
-        const color = isSelected ? '#ff6b35' : w.type === 'injection' ? '#81c784' : '#4fc3f7';
+        const color = isSelected ? '#ff6b35' : w.type === 'injection' ? '#81c784' : w.type === 'observation' ? '#ffd54f' : '#4fc3f7';
 
         return (
           <mesh key={w.id} position={[w.gridX, height / 2, w.gridY]}>

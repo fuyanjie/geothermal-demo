@@ -10,7 +10,7 @@ interface Props {
 
 const FIELD_LABELS: Record<SubsurfaceField, { label: string; unit: string }> = {
   temperature: { label: 'Temperature', unit: '°C' },
-  pressure: { label: 'Pressure', unit: 'MPa' },
+  pressure: { label: 'Pressure', unit: 'PSI' },
 };
 
 export default function ColorLegend({ field, min, max }: Props) {

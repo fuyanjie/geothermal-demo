@@ -1,7 +1,7 @@
-import { createContext, useContext, useState, useMemo, type ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useMemo, type ReactNode } from 'react';
 import type { SubsurfaceField } from '../types';
 import type { WellTimeSeries, SubsurfaceData } from '../types';
-import { wells, generateAllTimeSeries, generateSubsurfaceData } from '../data';
+import { wells, loadAllTimeSeries, generateSubsurfaceData, getCachedDates } from '../data';
 
 interface AppState {
   selectedWellId: string;
@@ -14,21 +14,38 @@ interface AppState {
   subsurfaceData: SubsurfaceData;
   numTimesteps: number;
   currentDate: string;
+  dates: string[];
 }
 
 const AppStateContext = createContext<AppState | null>(null);
 
-// Generate data once outside component to avoid re-computation
-const timeSeriesData = generateAllTimeSeries(wells);
+// Subsurface data can be generated synchronously (still synthetic)
 const subsurfaceData = generateSubsurfaceData(wells);
 
 export function AppStateProvider({ children }: { children: ReactNode }) {
   const [selectedWellId, setSelectedWellId] = useState(wells[0].id);
   const [timestepIndex, setTimestepIndex] = useState(0);
   const [subsurfaceField, setSubsurfaceField] = useState<SubsurfaceField>('temperature');
+  const [timeSeriesData, setTimeSeriesData] = useState<WellTimeSeries[] | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const numTimesteps = subsurfaceData.timesteps.length;
-  const currentDate = subsurfaceData.timesteps[timestepIndex]?.date ?? '';
+  useEffect(() => {
+    loadAllTimeSeries().then((data) => {
+      setTimeSeriesData(data);
+      setLoading(false);
+    });
+  }, []);
+
+  const dates = getCachedDates();
+  const numTimesteps = dates.length || subsurfaceData.timesteps.length;
+
+  // Map time-series timestep index to subsurface timestep index (3D has fewer frames)
+  const subsurfaceTimestepIndex = Math.min(
+    Math.floor((timestepIndex / Math.max(numTimesteps - 1, 1)) * (subsurfaceData.timesteps.length - 1)),
+    subsurfaceData.timesteps.length - 1,
+  );
+
+  const currentDate = dates[timestepIndex] ?? subsurfaceData.timesteps[subsurfaceTimestepIndex]?.date ?? '';
 
   const value = useMemo<AppState>(
     () => ({
@@ -38,13 +55,36 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       setTimestepIndex,
       subsurfaceField,
       setSubsurfaceField,
-      timeSeriesData,
-      subsurfaceData,
+      timeSeriesData: timeSeriesData ?? [],
+      subsurfaceData: {
+        ...subsurfaceData,
+        // Override the timestep index mapping so the 3D view uses the correct frame
+        _subsurfaceTimestepIndex: subsurfaceTimestepIndex,
+      } as SubsurfaceData & { _subsurfaceTimestepIndex: number },
       numTimesteps,
       currentDate,
+      dates,
     }),
-    [selectedWellId, timestepIndex, subsurfaceField, numTimesteps, currentDate],
+    [selectedWellId, timestepIndex, subsurfaceField, timeSeriesData, numTimesteps, currentDate, subsurfaceTimestepIndex, dates],
   );
+
+  if (loading || !timeSeriesData) {
+    return (
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh',
+        background: 'var(--color-bg-primary)',
+        color: 'var(--color-text-secondary)',
+        fontSize: '14px',
+        gap: '8px',
+      }}>
+        <span style={{ animation: 'spin 1s linear infinite', display: 'inline-block' }}>⏳</span>
+        Loading Brady Hot Springs data...
+      </div>
+    );
+  }
 
   return <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>;
 }

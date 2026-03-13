@@ -45,3 +45,8 @@
 .well-btn.injection:not(.active) {
   border-style: dashed;
 }
+
+.well-btn.observation:not(.active) {
+  border-color: #ffd54f55;
+  color: #ffd54f;
+}

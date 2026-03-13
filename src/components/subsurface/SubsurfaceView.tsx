@@ -8,9 +8,11 @@ import ColorLegend from './ColorLegend';
 import './SubsurfaceView.css';
 
 export default function SubsurfaceView() {
-  const { subsurfaceData, subsurfaceField, timestepIndex } = useAppState();
+  const { subsurfaceData, subsurfaceField } = useAppState();
   const { grid, timesteps } = subsurfaceData;
-  const timestep = timesteps[timestepIndex];
+  // Use mapped subsurface index (3D has fewer frames than time-series)
+  const subIdx = (subsurfaceData as unknown as { _subsurfaceTimestepIndex?: number })._subsurfaceTimestepIndex ?? 0;
+  const timestep = timesteps[Math.min(subIdx, timesteps.length - 1)];
   const fieldData = timestep[subsurfaceField];
 
   // Compute min/max for color scale

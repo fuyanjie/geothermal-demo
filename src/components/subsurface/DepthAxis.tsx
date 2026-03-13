@@ -1,6 +1,6 @@
 import { Text } from '@react-three/drei';
 import type { SubsurfaceGrid } from '../../types';
-import { SALTON_SEA } from '../../data/constants';
+import { BRADY } from '../../data/constants';
 
 interface Props {
   grid: SubsurfaceGrid;
@@ -8,12 +8,12 @@ interface Props {
 
 export default function DepthAxis({ grid }: Props) {
   const { nz } = grid;
-  const labels = [1000, 1500, 2000, 2500, 3000];
+  const labels = [0, 100, 200, 300, 400, 500];
 
   return (
     <group position={[-1.5, 0, -1.5]}>
       {labels.map((depth) => {
-        const fraction = (depth - SALTON_SEA.depthTop) / (SALTON_SEA.depthBottom - SALTON_SEA.depthTop);
+        const fraction = (depth - BRADY.depthTop) / (BRADY.depthBottom - BRADY.depthTop);
         const y = fraction * nz;
         return (
           <Text
@@ -33,9 +33,7 @@ export default function DepthAxis({ grid }: Props) {
         <bufferGeometry>
           <bufferAttribute
             attach="attributes-position"
-            count={2}
-            array={new Float32Array([0.3, 0, 0, 0.3, nz, 0])}
-            itemSize={3}
+            args={[new Float32Array([0.3, 0, 0, 0.3, nz, 0]), 3]}
           />
         </bufferGeometry>
         <lineBasicMaterial color="#8b99a8" />

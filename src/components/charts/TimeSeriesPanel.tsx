@@ -1,13 +1,14 @@
 import { useMemo } from 'react';
 import { useAppState } from '../../context/AppStateContext';
+import type { TimeSeriesField } from '../../types';
 import TimeSeriesChart from './TimeSeriesChart';
 import './TimeSeriesPanel.css';
 
-const CHART_CONFIGS = [
-  { field: 'productionRate' as const, label: 'Production Rate', unit: 'kg/s', color: 'var(--color-production)' },
-  { field: 'injectionRate' as const, label: 'Injection Rate', unit: 'kg/s', color: 'var(--color-injection)' },
-  { field: 'temperature' as const, label: 'Temperature', unit: '°C', color: 'var(--color-temperature)' },
-  { field: 'pressure' as const, label: 'Pressure', unit: 'MPa', color: 'var(--color-pressure)' },
+const CHART_CONFIGS: { field: TimeSeriesField; label: string; unit: string; color: string }[] = [
+  { field: 'extractionFlow', label: 'Extraction Flow', unit: 'GPM', color: 'var(--color-production)' },
+  { field: 'injectionFlow',  label: 'Injection Flow',  unit: 'GPM', color: 'var(--color-injection)' },
+  { field: 'temperature',    label: 'Temperature',      unit: '°C',  color: 'var(--color-temperature)' },
+  { field: 'pressure',       label: 'Pressure',         unit: 'PSI', color: 'var(--color-pressure)' },
 ];
 
 export default function TimeSeriesPanel() {

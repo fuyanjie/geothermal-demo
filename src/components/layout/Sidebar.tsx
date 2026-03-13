@@ -18,7 +18,7 @@ export default function Sidebar() {
     <aside className="sidebar">
       <div className="sidebar-brand">
         <h1 className="sidebar-title">Geothermal Demo</h1>
-        <p className="sidebar-subtitle">Salton Sea Field</p>
+        <p className="sidebar-subtitle">Brady Hot Springs</p>
       </div>
       <nav className="sidebar-nav">
         {navItems.map((item) => (

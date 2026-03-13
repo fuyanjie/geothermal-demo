@@ -1,35 +1,40 @@
-export const SALTON_SEA = {
-  centerLat: 33.20,
-  centerLon: -115.60,
+export const BRADY = {
+  name: 'Brady Hot Springs',
+  location: 'Churchill County, Nevada',
 
-  tempMin: 300,
-  tempMax: 370,
-  tempSurface: 150,
+  centerLat: 39.80,
+  centerLon: -119.01,
 
+  // Brady is a moderate-temperature system (~150-200°C)
+  tempMin: 100,
+  tempMax: 200,
+  tempSurface: 20,
+
+  // Pressure in PSI (matching deployment data units)
   pressureMin: 10,
-  pressureMax: 25,
+  pressureMax: 350,
 
-  productionRateMin: 40,
-  productionRateMax: 120,
-  injectionRateMin: 30,
-  injectionRateMax: 100,
+  // Flow rates in GPM
+  extractionFlowMax: 3000,
+  injectionFlowMax: 5000,
 
-  depthTop: 1000,
-  depthBottom: 3000,
+  // Brady wells are relatively shallow
+  depthTop: 0,
+  depthBottom: 500,
 
-  startDate: '2019-01-01',
-  endDate: '2023-12-01',
-  numTimesteps: 60,
+  startDate: '2016-03-11T08',
+  endDate: '2016-03-27T23',
+  numTimesteps: 400,
 
   grid: {
     nx: 20,
     ny: 20,
     nz: 10,
-    dx: 200,
-    dy: 200,
-    dz: 200,
-    sizeX: 4000,
-    sizeY: 4000,
-    sizeZ: 2000,
+    dx: 100,
+    dy: 100,
+    dz: 50,
+    sizeX: 2000,
+    sizeY: 2000,
+    sizeZ: 500,
   },
 } as const;

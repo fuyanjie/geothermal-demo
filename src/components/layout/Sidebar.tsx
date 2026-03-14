@@ -21,7 +21,7 @@ export default function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="sidebar-brand">
-        <h1 className="sidebar-title">Geothermal Demo</h1>
+        <h1 className="sidebar-title">Geothermal AI</h1>
         <p className="sidebar-subtitle">Brady Hot Springs</p>
       </div>
       <nav className="sidebar-nav">

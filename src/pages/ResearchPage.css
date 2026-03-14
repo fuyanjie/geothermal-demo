@@ -135,6 +135,41 @@
   color: var(--color-text-primary);
 }
 
+/* ---------- collaborating PIs ---------- */
+.research-pis {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 800px) {
+  .research-pis {
+    grid-template-columns: 1fr;
+  }
+}
+
+.research-pi {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.research-pi-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.research-pi-affiliation {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
 /* ---------- demo tiers ---------- */
 .research-tiers {
   display: grid;

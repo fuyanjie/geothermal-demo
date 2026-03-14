@@ -80,6 +80,29 @@ export default function ResearchPage() {
         </div>
       </section>
 
+      {/* Collaborating PIs */}
+      <section className="research-section">
+        <h2 className="research-section-title">Collaborating PIs</h2>
+        <div className="research-pis">
+          <div className="research-pi">
+            <span className="research-pi-name">Yanjie Fu</span>
+            <span className="research-pi-affiliation">Arizona State University</span>
+          </div>
+          <div className="research-pi">
+            <span className="research-pi-name">Nori Nakata</span>
+            <span className="research-pi-affiliation">Staff Scientist, Energy Geosciences Division, Lawrence Berkeley National Laboratory</span>
+          </div>
+          <div className="research-pi">
+            <span className="research-pi-name">Kunpeng Liu</span>
+            <span className="research-pi-affiliation">Clemson University</span>
+          </div>
+          <div className="research-pi">
+            <span className="research-pi-name">Dongjie Wang</span>
+            <span className="research-pi-affiliation">University of Kansas</span>
+          </div>
+        </div>
+      </section>
+
       {/* Demo System Tiers */}
       <section className="research-section">
         <h2 className="research-section-title">Interactive Demo System</h2>

@@ -1,7 +1,8 @@
+import { useAppState, type PageId } from '../../context/AppStateContext';
 import './Sidebar.css';
 
 interface NavItem {
-  id: string;
+  id: PageId | 'optimization';
   label: string;
   enabled: boolean;
   icon: string;
@@ -9,11 +10,13 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { id: 'explorer', label: 'Data Explorer', enabled: true, icon: '📊' },
-  { id: 'predictions', label: 'Predictions', enabled: false, icon: '🔮' },
+  { id: 'predictions', label: 'Predictions', enabled: true, icon: '🔮' },
   { id: 'optimization', label: 'Optimization', enabled: false, icon: '⚙️' },
 ];
 
 export default function Sidebar() {
+  const { currentPage, setCurrentPage } = useAppState();
+
   return (
     <aside className="sidebar">
       <div className="sidebar-brand">
@@ -24,8 +27,13 @@ export default function Sidebar() {
         {navItems.map((item) => (
           <button
             key={item.id}
-            className={`sidebar-nav-item ${item.enabled ? 'active' : 'disabled'}`}
+            className={`sidebar-nav-item ${item.id === currentPage ? 'active' : ''} ${!item.enabled ? 'disabled' : ''}`}
             disabled={!item.enabled}
+            onClick={() => {
+              if (item.enabled && (item.id === 'explorer' || item.id === 'predictions')) {
+                setCurrentPage(item.id);
+              }
+            }}
           >
             <span className="nav-icon">{item.icon}</span>
             <span className="nav-label">{item.label}</span>

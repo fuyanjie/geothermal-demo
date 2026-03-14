@@ -1,8 +1,20 @@
-import { AppStateProvider } from './context/AppStateContext';
+import { AppStateProvider, useAppState } from './context/AppStateContext';
 import Sidebar from './components/layout/Sidebar';
 import Header from './components/layout/Header';
 import DashboardLayout from './components/layout/DashboardLayout';
+import PredictionsPage from './pages/PredictionsPage';
 import './App.css';
+
+function PageRouter() {
+  const { currentPage } = useAppState();
+  switch (currentPage) {
+    case 'predictions':
+      return <PredictionsPage />;
+    case 'explorer':
+    default:
+      return <DashboardLayout />;
+  }
+}
 
 function App() {
   return (
@@ -11,7 +23,7 @@ function App() {
         <Sidebar />
         <main className="app-main">
           <Header />
-          <DashboardLayout />
+          <PageRouter />
         </main>
       </div>
     </AppStateProvider>

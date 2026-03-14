@@ -3,7 +3,11 @@ import type { SubsurfaceField } from '../types';
 import type { WellTimeSeries, SubsurfaceData } from '../types';
 import { wells, loadAllTimeSeries, generateSubsurfaceData, getCachedDates } from '../data';
 
+export type PageId = 'explorer' | 'predictions';
+
 interface AppState {
+  currentPage: PageId;
+  setCurrentPage: (page: PageId) => void;
   selectedWellId: string;
   setSelectedWellId: (id: string) => void;
   timestepIndex: number;
@@ -23,6 +27,7 @@ const AppStateContext = createContext<AppState | null>(null);
 const subsurfaceData = generateSubsurfaceData(wells);
 
 export function AppStateProvider({ children }: { children: ReactNode }) {
+  const [currentPage, setCurrentPage] = useState<PageId>('explorer');
   const [selectedWellId, setSelectedWellId] = useState(wells[0].id);
   const [timestepIndex, setTimestepIndex] = useState(0);
   const [subsurfaceField, setSubsurfaceField] = useState<SubsurfaceField>('temperature');
@@ -49,6 +54,8 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<AppState>(
     () => ({
+      currentPage,
+      setCurrentPage,
       selectedWellId,
       setSelectedWellId,
       timestepIndex,
@@ -65,7 +72,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       currentDate,
       dates,
     }),
-    [selectedWellId, timestepIndex, subsurfaceField, timeSeriesData, numTimesteps, currentDate, subsurfaceTimestepIndex, dates],
+    [currentPage, selectedWellId, timestepIndex, subsurfaceField, timeSeriesData, numTimesteps, currentDate, subsurfaceTimestepIndex, dates],
   );
 
   if (loading || !timeSeriesData) {

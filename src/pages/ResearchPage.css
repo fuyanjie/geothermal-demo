@@ -48,6 +48,22 @@
   margin: 0;
 }
 
+/* ---------- infographic ---------- */
+.research-infographic {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  padding: 8px;
+  overflow: hidden;
+}
+
+.research-infographic img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: calc(var(--border-radius) - 4px);
+}
+
 /* ---------- pillar cards ---------- */
 .research-pillars {
   display: grid;

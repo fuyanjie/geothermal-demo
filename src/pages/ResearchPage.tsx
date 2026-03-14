@@ -20,6 +20,17 @@ export default function ResearchPage() {
         </p>
       </section>
 
+      {/* Infographic */}
+      <section className="research-section">
+        <h2 className="research-section-title">Framework Overview</h2>
+        <div className="research-infographic">
+          <img
+            src={`${import.meta.env.BASE_URL}images/research-infographic.jpg`}
+            alt="Reimagining Geothermal Energy: A Knowledge-Guided Generative AI Framework — showing three pillars (Generative Physics-Informed Simulation, Adaptive Multi-Objective Operations, Site-Specific Physics Calibration) and national impact goals"
+          />
+        </div>
+      </section>
+
       {/* Three Core Pillars */}
       <section className="research-section">
         <h2 className="research-section-title">Three Core Pillars</h2>

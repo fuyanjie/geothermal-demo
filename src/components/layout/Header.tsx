@@ -9,16 +9,24 @@ export default function Header() {
 
   const isExplorer = currentPage === 'explorer';
 
+  const pageTitle = currentPage === 'explorer'
+    ? 'Data Explorer'
+    : currentPage === 'predictions'
+      ? 'Predictions'
+      : 'Optimization';
+
+  const pageSubtitle = currentPage === 'explorer'
+    ? 'Brady Hot Springs Geothermal Field, Nevada'
+    : currentPage === 'predictions'
+      ? 'Surrogate Model — Fracture → Temperature'
+      : 'Injection Rate Optimization';
+
   return (
     <header className="header">
       <div className="header-left">
-        <h2 className="header-title">{isExplorer ? 'Data Explorer' : 'Predictions'}</h2>
+        <h2 className="header-title">{pageTitle}</h2>
         <span className="header-separator">—</span>
-        <span className="header-location">
-          {isExplorer
-            ? 'Brady Hot Springs Geothermal Field, Nevada'
-            : 'Surrogate Model — Fracture → Temperature'}
-        </span>
+        <span className="header-location">{pageSubtitle}</span>
       </div>
       {isExplorer && (
         <div className="header-right">

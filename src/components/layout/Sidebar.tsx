@@ -2,7 +2,7 @@ import { useAppState, type PageId } from '../../context/AppStateContext';
 import './Sidebar.css';
 
 interface NavItem {
-  id: PageId | 'optimization';
+  id: PageId;
   label: string;
   enabled: boolean;
   icon: string;
@@ -11,7 +11,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { id: 'explorer', label: 'Data Explorer', enabled: true, icon: '📊' },
   { id: 'predictions', label: 'Predictions', enabled: true, icon: '🔮' },
-  { id: 'optimization', label: 'Optimization', enabled: false, icon: '⚙️' },
+  { id: 'optimization', label: 'Optimization', enabled: true, icon: '⚙️' },
 ];
 
 export default function Sidebar() {
@@ -30,7 +30,7 @@ export default function Sidebar() {
             className={`sidebar-nav-item ${item.id === currentPage ? 'active' : ''} ${!item.enabled ? 'disabled' : ''}`}
             disabled={!item.enabled}
             onClick={() => {
-              if (item.enabled && (item.id === 'explorer' || item.id === 'predictions')) {
+              if (item.enabled) {
                 setCurrentPage(item.id);
               }
             }}

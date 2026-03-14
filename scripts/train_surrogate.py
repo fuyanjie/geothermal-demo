@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """
-Train a small U-Net surrogate model: (fracture_field, timestep) → temperature_field.
+Train a lightweight CNN surrogate model: (fracture_field, timestep) → temperature_field.
 
 Input:  64×64×2 (channel 0 = fracture binary, channel 1 = timestep/10 broadcast)
 Output: 64×64×1 (predicted temperature field)
 
+Architecture: Simple encoder-decoder CNN (~47K params, ~0.2 MB).
 Trained on 980 samples × 11 timesteps = 10,780 pairs.
 Exports to TensorFlow.js format for in-browser inference.
 
@@ -27,7 +28,7 @@ MODEL_OUT = os.path.join(TEST_DIR, 'tfjs_model')
 
 GRID_SIZE = 64
 N_TIMESTEPS = 11
-EPOCHS = 20
+EPOCHS = 15
 BATCH_SIZE = 64
 LR = 1e-3
 
@@ -65,50 +66,38 @@ print(f'Training pairs: {X_input.shape[0]}')
 print(f'Input shape: {X_input.shape}')
 print(f'Output shape: {Y_temp.shape}')
 
-# ---------- build U-Net model ----------
-def build_unet(grid_size=64, in_channels=2):
+# ---------- build simple CNN model ----------
+def build_simple_cnn(grid_size=64, in_channels=2):
+    """Lightweight encoder-decoder CNN without skip connections.
+    ~47K params, ~0.2 MB — 40× smaller than the U-Net."""
     inputs = keras.Input(shape=(grid_size, grid_size, in_channels))
 
     # Encoder
-    c1 = layers.Conv2D(32, 3, padding='same', activation='relu')(inputs)
-    c1 = layers.Conv2D(32, 3, padding='same', activation='relu')(c1)
-    p1 = layers.MaxPooling2D(2)(c1)  # 32×32
+    x = layers.Conv2D(16, 3, padding='same', activation='relu')(inputs)
+    x = layers.Conv2D(16, 3, padding='same', activation='relu')(x)
+    x = layers.MaxPooling2D(2)(x)  # 32×32
 
-    c2 = layers.Conv2D(64, 3, padding='same', activation='relu')(p1)
-    c2 = layers.Conv2D(64, 3, padding='same', activation='relu')(c2)
-    p2 = layers.MaxPooling2D(2)(c2)  # 16×16
-
-    c3 = layers.Conv2D(128, 3, padding='same', activation='relu')(p2)
-    c3 = layers.Conv2D(128, 3, padding='same', activation='relu')(c3)
-    p3 = layers.MaxPooling2D(2)(c3)  # 8×8
+    x = layers.Conv2D(32, 3, padding='same', activation='relu')(x)
+    x = layers.Conv2D(32, 3, padding='same', activation='relu')(x)
+    x = layers.MaxPooling2D(2)(x)  # 16×16
 
     # Bottleneck
-    b = layers.Conv2D(256, 3, padding='same', activation='relu')(p3)
-    b = layers.Conv2D(256, 3, padding='same', activation='relu')(b)
+    x = layers.Conv2D(64, 3, padding='same', activation='relu')(x)  # 16×16
 
     # Decoder
-    u3 = layers.UpSampling2D(2)(b)  # 16×16
-    u3 = layers.Concatenate()([u3, c3])
-    d3 = layers.Conv2D(128, 3, padding='same', activation='relu')(u3)
-    d3 = layers.Conv2D(128, 3, padding='same', activation='relu')(d3)
+    x = layers.UpSampling2D(2)(x)  # 32×32
+    x = layers.Conv2D(32, 3, padding='same', activation='relu')(x)
 
-    u2 = layers.UpSampling2D(2)(d3)  # 32×32
-    u2 = layers.Concatenate()([u2, c2])
-    d2 = layers.Conv2D(64, 3, padding='same', activation='relu')(u2)
-    d2 = layers.Conv2D(64, 3, padding='same', activation='relu')(d2)
+    x = layers.UpSampling2D(2)(x)  # 64×64
+    x = layers.Conv2D(16, 3, padding='same', activation='relu')(x)
 
-    u1 = layers.UpSampling2D(2)(d2)  # 64×64
-    u1 = layers.Concatenate()([u1, c1])
-    d1 = layers.Conv2D(32, 3, padding='same', activation='relu')(u1)
-    d1 = layers.Conv2D(32, 3, padding='same', activation='relu')(d1)
+    outputs = layers.Conv2D(1, 1, activation='linear')(x)  # 64×64×1
 
-    outputs = layers.Conv2D(1, 1, activation='linear')(d1)  # 64×64×1
-
-    model = keras.Model(inputs, outputs, name='fracture_to_temp_unet')
+    model = keras.Model(inputs, outputs, name='fracture_to_temp_cnn')
     return model
 
-print('Building U-Net model ...')
-model = build_unet(GRID_SIZE, 2)
+print('Building simple CNN model ...')
+model = build_simple_cnn(GRID_SIZE, 2)
 model.summary()
 
 model.compile(

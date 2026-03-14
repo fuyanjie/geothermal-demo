@@ -134,11 +134,6 @@ export default function ResearchPage() {
           </div>
         </div>
       </section>
-
-      {/* Acknowledgment */}
-      <p className="research-ack">
-        ASU–KU Collaboration &middot; Supported by the U.S. Department of Energy
-      </p>
     </div>
   );
 }

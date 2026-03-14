@@ -9,6 +9,7 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
+  { id: 'research', label: 'Research', enabled: true, icon: '🔬' },
   { id: 'explorer', label: 'Data Explorer', enabled: true, icon: '📊' },
   { id: 'predictions', label: 'Predictions', enabled: true, icon: '🔮' },
   { id: 'optimization', label: 'Optimization', enabled: true, icon: '⚙️' },

@@ -9,17 +9,21 @@ export default function Header() {
 
   const isExplorer = currentPage === 'explorer';
 
-  const pageTitle = currentPage === 'explorer'
-    ? 'Data Explorer'
-    : currentPage === 'predictions'
-      ? 'Predictions'
-      : 'Optimization';
+  const pageTitles: Record<string, string> = {
+    research: 'Research',
+    explorer: 'Data Explorer',
+    predictions: 'Predictions',
+    optimization: 'Optimization',
+  };
+  const pageSubtitles: Record<string, string> = {
+    research: 'Knowledge-Guided Generative AI for Geothermal Energy',
+    explorer: 'Brady Hot Springs Geothermal Field, Nevada',
+    predictions: 'Surrogate Model — Fracture → Temperature',
+    optimization: 'Injection Rate Optimization',
+  };
 
-  const pageSubtitle = currentPage === 'explorer'
-    ? 'Brady Hot Springs Geothermal Field, Nevada'
-    : currentPage === 'predictions'
-      ? 'Surrogate Model — Fracture → Temperature'
-      : 'Injection Rate Optimization';
+  const pageTitle = pageTitles[currentPage] ?? 'Research';
+  const pageSubtitle = pageSubtitles[currentPage] ?? '';
 
   return (
     <header className="header">

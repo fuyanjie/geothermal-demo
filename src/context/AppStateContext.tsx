@@ -3,7 +3,7 @@ import type { SubsurfaceField } from '../types';
 import type { WellTimeSeries, SubsurfaceData } from '../types';
 import { wells, loadAllTimeSeries, generateSubsurfaceData, getCachedDates } from '../data';
 
-export type PageId = 'explorer' | 'predictions' | 'optimization';
+export type PageId = 'research' | 'explorer' | 'predictions' | 'optimization';
 
 interface AppState {
   currentPage: PageId;
@@ -27,7 +27,7 @@ const AppStateContext = createContext<AppState | null>(null);
 const subsurfaceData = generateSubsurfaceData(wells);
 
 export function AppStateProvider({ children }: { children: ReactNode }) {
-  const [currentPage, setCurrentPage] = useState<PageId>('explorer');
+  const [currentPage, setCurrentPage] = useState<PageId>('research');
   const [selectedWellId, setSelectedWellId] = useState(wells[0].id);
   const [timestepIndex, setTimestepIndex] = useState(0);
   const [subsurfaceField, setSubsurfaceField] = useState<SubsurfaceField>('temperature');

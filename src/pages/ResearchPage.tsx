@@ -82,7 +82,7 @@ export default function ResearchPage() {
 
       {/* Collaborating PIs */}
       <section className="research-section">
-        <h2 className="research-section-title">Collaborating PIs</h2>
+        <h2 className="research-section-title">Research Team</h2>
         <div className="research-pis">
           <div className="research-pi">
             <span className="research-pi-name">Yanjie Fu</span>

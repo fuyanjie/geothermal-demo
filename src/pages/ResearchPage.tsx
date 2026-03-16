@@ -128,6 +128,27 @@ export default function ResearchPage() {
               arXiv:2505.18204
             </a>
           </div>
+          <div className="research-paper">
+            <a
+              className="research-paper-title"
+              href="https://arxiv.org/abs/2508.19487"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Data-Efficient Symbolic Regression via Foundation Model Distillation
+            </a>
+            <span className="research-paper-authors">
+              Wangyang Ying, Jinghan Zhang, Haoyue Bai, Nanxu Gong, Xinyuan Wang, Kunpeng Liu, Chandan K. Reddy, Yanjie Fu
+            </span>
+            <a
+              className="research-paper-link"
+              href="https://arxiv.org/abs/2508.19487"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              arXiv:2508.19487
+            </a>
+          </div>
         </div>
       </section>
 

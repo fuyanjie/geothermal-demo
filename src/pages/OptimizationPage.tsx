@@ -10,6 +10,7 @@ import {
   LineChart,
   Line,
   ResponsiveContainer,
+  ReferenceLine,
 } from 'recharts';
 import type { OptResults, OptMode } from '../types/optimization';
 import type { TestDataset } from '../types/predictions';
@@ -23,6 +24,7 @@ import WellOverlay from '../components/optimization/WellOverlay';
 import './OptimizationPage.css';
 
 const DISPLAY_SIZE = 240;
+const COMPARE_SIZE = 200;
 
 export default function OptimizationPage() {
   const [optResults, setOptResults] = useState<OptResults | null>(null);
@@ -94,8 +96,9 @@ export default function OptimizationPage() {
     [testData],
   );
 
-  // For baseline/optimized: compute temperature field on-the-fly using TF.js + injection model
+  // Temperature fields: current mode + baseline for comparison
   const [displayTempField, setDisplayTempField] = useState<Float32Array | null>(null);
+  const [baselineTempField, setBaselineTempField] = useState<Float32Array | null>(null);
 
   useEffect(() => {
     if (!fractureField || !config || !currentSchedule || !isModelLoaded()) return;
@@ -106,18 +109,24 @@ export default function OptimizationPage() {
       const baseTemp = await predict(fractureField, selectedTimestep, gridSize, numTimesteps);
       if (cancelled) return;
 
-      const rates = currentSchedule.map((wellSched) => wellSched[selectedTimestep]);
-      const modified = applyInjectionEffects(baseTemp, rates, config, gridSize);
+      // Always compute baseline field for comparison
+      const baselineRates = scenario?.baseline.schedule.map(w => w[selectedTimestep]) ?? [0.5, 0.5, 0.5];
+      const baselineField = applyInjectionEffects(baseTemp, baselineRates, config, gridSize);
+
+      // Compute current mode field
+      const currentRates = currentSchedule.map((wellSched) => wellSched[selectedTimestep]);
+      const currentField = applyInjectionEffects(baseTemp, currentRates, config, gridSize);
 
       if (!cancelled) {
-        setDisplayTempField(modified);
+        setBaselineTempField(baselineField);
+        setDisplayTempField(currentField);
       }
     })();
 
     return () => {
       cancelled = true;
     };
-  }, [fractureField, config, currentSchedule, selectedTimestep, gridSize, numTimesteps, mode]);
+  }, [fractureField, config, currentSchedule, selectedTimestep, gridSize, numTimesteps, mode, scenario]);
 
   // Custom mode: compute full KPIs across all timesteps
   useEffect(() => {
@@ -186,6 +195,18 @@ export default function OptimizationPage() {
     }));
   }, [currentProdTemps]);
 
+  // KPI comparison bar chart data
+  const kpiCompareData = useMemo(() => {
+    if (!currentKPIs || !baselineKPIs) return [];
+    const modeLabel = mode === 'optimized' ? 'Optimized' : mode === 'custom' ? 'Custom' : 'Baseline';
+    return [
+      { name: 'Energy', Baseline: baselineKPIs.energy, [modeLabel]: currentKPIs.energy ?? 0 },
+      { name: 'Sustain.', Baseline: baselineKPIs.sustainability, [modeLabel]: currentKPIs.sustainability ?? 0 },
+      { name: 'Safety', Baseline: baselineKPIs.safety, [modeLabel]: currentKPIs.safety ?? 0 },
+      { name: 'Overall', Baseline: baselineKPIs.overallScore, [modeLabel]: currentKPIs.overallScore ?? 0 },
+    ];
+  }, [currentKPIs, baselineKPIs, mode]);
+
   // Custom slider handler
   const handleSliderChange = useCallback(
     (wellIdx: number, timestep: number, value: number) => {
@@ -225,6 +246,9 @@ export default function OptimizationPage() {
     if (baseline === 0) return null;
     return ((current - baseline) / Math.abs(baseline)) * 100;
   };
+
+  const modeLabel = mode === 'optimized' ? 'Optimized' : mode === 'custom' ? 'Custom' : 'Baseline';
+  const accentFill = '#ff6b35';
 
   return (
     <div className="optimization-page">
@@ -318,53 +342,126 @@ export default function OptimizationPage() {
             </div>
           </div>
 
-          {/* Temperature field */}
-          <div className="opt-panel">
-            <div className="opt-panel-title">
-              Temperature (t={selectedTimestep})
-            </div>
-            <div className="opt-heatmap-wrapper">
-              {displayTempField ? (
-                <HeatmapCanvas
-                  data={displayTempField}
-                  gridSize={gridSize}
-                  colorFn={tempColorFn}
-                  displaySize={DISPLAY_SIZE}
-                />
-              ) : (
-                <div
-                  style={{
-                    width: DISPLAY_SIZE,
-                    height: DISPLAY_SIZE,
-                    background: 'var(--color-bg-primary)',
-                    borderRadius: 4,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'var(--color-text-secondary)',
-                    fontSize: 12,
-                  }}
-                >
-                  Computing...
+          {/* Temperature field: side-by-side when not baseline */}
+          {mode !== 'baseline' ? (
+            <div className="opt-comparison">
+              {/* Baseline */}
+              <div className="opt-panel">
+                <div className="opt-panel-title">Baseline Temperature (t={selectedTimestep})</div>
+                <div className="opt-heatmap-wrapper">
+                  {baselineTempField ? (
+                    <HeatmapCanvas
+                      data={baselineTempField}
+                      gridSize={gridSize}
+                      colorFn={tempColorFn}
+                      displaySize={COMPARE_SIZE}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: COMPARE_SIZE,
+                        height: COMPARE_SIZE,
+                        background: 'var(--color-bg-primary)',
+                        borderRadius: 4,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'var(--color-text-secondary)',
+                        fontSize: 12,
+                      }}
+                    >
+                      Computing...
+                    </div>
+                  )}
+                  {config && (
+                    <WellOverlay config={config} gridSize={gridSize} displaySize={COMPARE_SIZE} />
+                  )}
                 </div>
-              )}
-              {config && (
-                <WellOverlay config={config} gridSize={gridSize} displaySize={DISPLAY_SIZE} />
-              )}
-            </div>
-            <div className="opt-legend opt-legend-gradient">
-              <div
-                className="opt-legend-bar"
-                style={{
-                  background:
-                    'linear-gradient(to right, #0000ff, #00ffff, #00ff00, #ffff00, #ff0000)',
-                }}
-              />
-              <div className="opt-legend-labels">
-                <span>{testData.metadata.tempMin.toFixed(2)}</span>
-                <span>Temperature</span>
-                <span>{testData.metadata.tempMax.toFixed(2)}</span>
               </div>
+              {/* Optimized/Custom */}
+              <div className="opt-panel">
+                <div className="opt-panel-title">{modeLabel} Temperature (t={selectedTimestep})</div>
+                <div className="opt-heatmap-wrapper">
+                  {displayTempField ? (
+                    <HeatmapCanvas
+                      data={displayTempField}
+                      gridSize={gridSize}
+                      colorFn={tempColorFn}
+                      displaySize={COMPARE_SIZE}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: COMPARE_SIZE,
+                        height: COMPARE_SIZE,
+                        background: 'var(--color-bg-primary)',
+                        borderRadius: 4,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'var(--color-text-secondary)',
+                        fontSize: 12,
+                      }}
+                    >
+                      Computing...
+                    </div>
+                  )}
+                  {config && (
+                    <WellOverlay config={config} gridSize={gridSize} displaySize={COMPARE_SIZE} />
+                  )}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="opt-panel">
+              <div className="opt-panel-title">
+                Temperature (t={selectedTimestep})
+              </div>
+              <div className="opt-heatmap-wrapper">
+                {displayTempField ? (
+                  <HeatmapCanvas
+                    data={displayTempField}
+                    gridSize={gridSize}
+                    colorFn={tempColorFn}
+                    displaySize={DISPLAY_SIZE}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: DISPLAY_SIZE,
+                      height: DISPLAY_SIZE,
+                      background: 'var(--color-bg-primary)',
+                      borderRadius: 4,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'var(--color-text-secondary)',
+                      fontSize: 12,
+                    }}
+                  >
+                    Computing...
+                  </div>
+                )}
+                {config && (
+                  <WellOverlay config={config} gridSize={gridSize} displaySize={DISPLAY_SIZE} />
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Temperature legend (shared) */}
+          <div className="opt-legend opt-legend-gradient">
+            <div
+              className="opt-legend-bar"
+              style={{
+                background:
+                  'linear-gradient(to right, #0000ff, #00ffff, #00ff00, #ffff00, #ff0000)',
+              }}
+            />
+            <div className="opt-legend-labels">
+              <span>{testData.metadata.tempMin.toFixed(2)}</span>
+              <span>Temperature</span>
+              <span>{testData.metadata.tempMax.toFixed(2)}</span>
             </div>
           </div>
         </div>
@@ -424,6 +521,32 @@ export default function OptimizationPage() {
               </LineChart>
             </ResponsiveContainer>
           </div>
+
+          {/* KPI Comparison Bar Chart (shown when not baseline) */}
+          {mode !== 'baseline' && kpiCompareData.length > 0 && (
+            <div className="opt-chart-panel">
+              <div className="opt-chart-title">KPI Comparison: Baseline vs {modeLabel}</div>
+              <ResponsiveContainer width="100%" height={180}>
+                <BarChart data={kpiCompareData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1e2d3d" />
+                  <XAxis dataKey="name" tick={{ fill: '#8b99a8', fontSize: 10 }} />
+                  <YAxis tick={{ fill: '#8b99a8', fontSize: 10 }} />
+                  <Tooltip
+                    contentStyle={{
+                      background: '#162231',
+                      border: '1px solid #1e2d3d',
+                      borderRadius: 6,
+                      fontSize: 11,
+                    }}
+                  />
+                  <Legend wrapperStyle={{ fontSize: 10 }} />
+                  <ReferenceLine y={0} stroke="#1e2d3d" />
+                  <Bar dataKey="Baseline" fill="#5c6b7a" radius={[2, 2, 0, 0]} />
+                  <Bar dataKey={modeLabel} fill={accentFill} radius={[2, 2, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          )}
 
           {/* KPI Cards */}
           <div className="opt-kpis">

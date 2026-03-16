@@ -191,6 +191,16 @@
   color: var(--color-text-secondary);
 }
 
+/* ---------- side-by-side comparison ---------- */
+.opt-comparison {
+  display: flex;
+  gap: 12px;
+}
+
+.opt-comparison .opt-panel {
+  flex: 1;
+}
+
 /* ---------- charts column ---------- */
 .opt-charts {
   display: flex;
@@ -246,16 +256,21 @@
 }
 
 .opt-kpi-delta {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
-  margin-left: 4px;
+  margin-left: 6px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  display: inline-block;
 }
 
 .opt-kpi-delta.positive {
+  background: rgba(102, 187, 106, 0.25);
   color: #66bb6a;
 }
 
 .opt-kpi-delta.negative {
+  background: rgba(239, 83, 80, 0.25);
   color: #ef5350;
 }
 

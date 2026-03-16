@@ -191,6 +191,27 @@ export default function ResearchPage() {
               eScholarship, 2023
             </a>
           </div>
+          <div className="research-paper">
+            <a
+              className="research-paper-title"
+              href="https://doi.org/10.1190/tle37120894.1"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Geophysical inversion versus machine learning in inverse problems
+            </a>
+            <span className="research-paper-authors">
+              Yoonsoo Kim, Nori Nakata
+            </span>
+            <a
+              className="research-paper-link"
+              href="https://doi.org/10.1190/tle37120894.1"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              The Leading Edge, 37(12), 2018
+            </a>
+          </div>
         </div>
       </section>
 

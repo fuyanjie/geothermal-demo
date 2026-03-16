@@ -233,6 +233,27 @@ export default function ResearchPage() {
               Nexus, 1(4), 2024
             </a>
           </div>
+          <div className="research-paper">
+            <a
+              className="research-paper-title"
+              href="https://doi.org/10.1109/TNNLS.2025"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Expensive multiobjective optimization guided by attention-enhanced generative models
+            </a>
+            <span className="research-paper-authors">
+              Guodong Chen, Dongjie Wang, Kunpeng Liu, Jiu Jiao, Jinhong Jin
+            </span>
+            <a
+              className="research-paper-link"
+              href="https://doi.org/10.1109/TNNLS.2025"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              IEEE TNNLS, 2025
+            </a>
+          </div>
         </div>
       </section>
 

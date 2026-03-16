@@ -170,6 +170,27 @@ export default function ResearchPage() {
               arXiv:2505.15572
             </a>
           </div>
+          <div className="research-paper">
+            <a
+              className="research-paper-title"
+              href="https://escholarship.org/uc/item/4x8868mf"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Characterizing the Geothermal Lithium Resource at the Salton Sea
+            </a>
+            <span className="research-paper-authors">
+              Patrick Dobson, Naod Araya, Maryjo Brounce, Margaret Busse, Mary Kay Camarillo, Lauren English, Jennifer Humphreys, Boriana Kalderon-Asael, Michael McKibben, Dev Millstein, Nori Nakata, John O'Sullivan, Noah Planavsky, Joris Popineau, Theo Renaud, Jeremy Riffault, Margaret Slattery, Eric Sonnenthal, Nicolas Spycher, Jennifer Stokes-Draut, William Stringfellow, Malcolm White, et al.
+            </span>
+            <a
+              className="research-paper-link"
+              href="https://escholarship.org/uc/item/4x8868mf"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              eScholarship, 2023
+            </a>
+          </div>
         </div>
       </section>
 

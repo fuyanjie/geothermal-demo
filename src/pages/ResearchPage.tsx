@@ -31,6 +31,24 @@ export default function ResearchPage() {
         </div>
       </section>
 
+      {/* Video */}
+      <section className="research-section">
+        <h2 className="research-section-title">Project Video</h2>
+        <div className="research-video">
+          <video
+            controls
+            preload="metadata"
+            poster={`${import.meta.env.BASE_URL}images/research-infographic.jpg`}
+          >
+            <source
+              src={`${import.meta.env.BASE_URL}images/research-video.mp4`}
+              type="video/mp4"
+            />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </section>
+
       {/* Three Core Pillars */}
       <section className="research-section">
         <h2 className="research-section-title">Three Core Pillars</h2>

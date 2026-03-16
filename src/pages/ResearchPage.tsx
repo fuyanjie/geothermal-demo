@@ -103,6 +103,34 @@ export default function ResearchPage() {
         </div>
       </section>
 
+      {/* Preliminary Papers */}
+      <section className="research-section">
+        <h2 className="research-section-title">Preliminary Papers</h2>
+        <div className="research-papers">
+          <div className="research-paper">
+            <a
+              className="research-paper-title"
+              href="https://arxiv.org/abs/2505.18204"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Brownian Bridge Augmented Surrogate Simulation and Injection Planning for Geological CO2 Storage
+            </a>
+            <span className="research-paper-authors">
+              Haoyue Bai, Guodong Chen, Wangyang Ying, Xinyuan Wang, Nanxu Gong, Sixun Dong, Giulia Pedrielli, Haoyu Wang, Haifeng Chen, Yanjie Fu
+            </span>
+            <a
+              className="research-paper-link"
+              href="https://arxiv.org/abs/2505.18204"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              arXiv:2505.18204
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* Demo System Tiers */}
       <section className="research-section">
         <h2 className="research-section-title">Interactive Demo System</h2>

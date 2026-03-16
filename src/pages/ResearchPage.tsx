@@ -100,6 +100,10 @@ export default function ResearchPage() {
             <span className="research-pi-name">Dongjie Wang</span>
             <span className="research-pi-affiliation">University of Kansas</span>
           </div>
+          <div className="research-pi">
+            <span className="research-pi-name">Guodong Chen</span>
+            <span className="research-pi-affiliation">University of California, Berkeley and Lawrence Berkeley National Laboratory</span>
+          </div>
         </div>
       </section>
 

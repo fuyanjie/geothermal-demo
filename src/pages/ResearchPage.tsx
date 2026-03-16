@@ -109,7 +109,7 @@ export default function ResearchPage() {
 
       {/* Preliminary Papers */}
       <section className="research-section">
-        <h2 className="research-section-title">Preliminary Papers</h2>
+        <h2 className="research-section-title">Preliminary Publications</h2>
         <div className="research-papers">
           <div className="research-paper">
             <a

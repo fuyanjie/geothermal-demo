@@ -149,6 +149,27 @@ export default function ResearchPage() {
               arXiv:2508.19487
             </a>
           </div>
+          <div className="research-paper">
+            <a
+              className="research-paper-title"
+              href="https://arxiv.org/abs/2505.15572"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Bridging the Domain Gap in Equation Distillation with Reinforcement Feedback
+            </a>
+            <span className="research-paper-authors">
+              Wangyang Ying, Haoyue Bai, Nanxu Gong, Xinyuan Wang, Sixun Dong, Haifeng Chen, Yanjie Fu
+            </span>
+            <a
+              className="research-paper-link"
+              href="https://arxiv.org/abs/2505.15572"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              arXiv:2505.15572
+            </a>
+          </div>
         </div>
       </section>
 

@@ -212,6 +212,27 @@ export default function ResearchPage() {
               The Leading Edge, 37(12), 2018
             </a>
           </div>
+          <div className="research-paper">
+            <a
+              className="research-paper-title"
+              href="https://doi.org/10.1016/j.ynexs.2024.100040"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Machine-learning-accelerated multi-objective design of fractured geothermal systems
+            </a>
+            <span className="research-paper-authors">
+              Guodong Chen, Jiu Jiao, Kunpeng Liu, Dongjie Wang, Jinhong Jin
+            </span>
+            <a
+              className="research-paper-link"
+              href="https://doi.org/10.1016/j.ynexs.2024.100040"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Nexus, 1(4), 2024
+            </a>
+          </div>
         </div>
       </section>
 

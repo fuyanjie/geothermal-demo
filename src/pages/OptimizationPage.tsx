@@ -11,6 +11,10 @@ import {
   Line,
   ResponsiveContainer,
   ReferenceLine,
+  Scatter,
+  ScatterChart,
+  ZAxis,
+  Cell,
 } from 'recharts';
 import type { OptResults, OptMode } from '../types/optimization';
 import type { TestDataset } from '../types/predictions';
@@ -206,6 +210,49 @@ export default function OptimizationPage() {
       { name: 'Overall', Baseline: baselineKPIs.overallScore, [modeLabel]: currentKPIs.overallScore ?? 0 },
     ];
   }, [currentKPIs, baselineKPIs, mode]);
+
+  // Pareto front data: all scenarios mapped to energy vs sustainability
+  const paretoData = useMemo(() => {
+    if (!optResults) return [];
+    return optResults.scenarios.map((s, i) => ({
+      id: i,
+      baselineEnergy: s.baseline.energy,
+      baselineSustainability: s.baseline.sustainability,
+      baselineSafety: s.baseline.safety,
+      optEnergy: s.optimized.energy,
+      optSustainability: s.optimized.sustainability,
+      optSafety: s.optimized.safety,
+      improvement: s.optimized.overallScore - s.baseline.overallScore,
+    }));
+  }, [optResults]);
+
+  // Sensitivity analysis: per-well contribution to overall score change
+  const sensitivityData = useMemo(() => {
+    if (!scenario || !config) return [];
+    const optimized = scenario.optimized.overallScore;
+    const baseline = scenario.baseline.overallScore;
+    const baseSchedule = scenario.baseline.schedule;
+    const optSchedule = scenario.optimized.schedule;
+
+    const wellNames = ['Injection Well 1', 'Injection Well 2', 'Injection Well 3'];
+    return wellNames.map((name, wIdx) => {
+      const baseAvg = baseSchedule[wIdx].reduce((a, b) => a + b, 0) / baseSchedule[wIdx].length;
+      const optAvg = optSchedule[wIdx].reduce((a, b) => a + b, 0) / optSchedule[wIdx].length;
+      const rateChange = optAvg - baseAvg;
+      const totalChange = optSchedule.reduce((sum, well, i) => {
+        const bAvg = baseSchedule[i].reduce((a, b) => a + b, 0) / baseSchedule[i].length;
+        const oAvg = well.reduce((a, b) => a + b, 0) / well.length;
+        return sum + Math.abs(oAvg - bAvg);
+      }, 0) || 1;
+      const contribution = (Math.abs(rateChange) / totalChange) * (optimized - baseline);
+      return {
+        name,
+        rateChange,
+        contribution,
+        positive: contribution >= 0,
+      };
+    });
+  }, [scenario, config]);
 
   // Custom slider handler
   const handleSliderChange = useCallback(
@@ -623,6 +670,101 @@ export default function OptimizationPage() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Pareto Front Visualization */}
+      {paretoData.length > 0 && (
+        <div className="opt-pareto-section">
+          <div className="opt-section-title">Multi-Objective Trade-off: Pareto Analysis</div>
+          <div className="opt-pareto-content">
+            <ResponsiveContainer width="100%" height={300}>
+              <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#1e2d3d" />
+                <XAxis
+                  type="number"
+                  dataKey="energy"
+                  name="Energy"
+                  tick={{ fill: '#8b99a8', fontSize: 10 }}
+                  label={{ value: 'Energy Score', position: 'bottom', fill: '#8b99a8', fontSize: 11, offset: -5 }}
+                />
+                <YAxis
+                  type="number"
+                  dataKey="sustainability"
+                  name="Sustainability"
+                  tick={{ fill: '#8b99a8', fontSize: 10 }}
+                  label={{ value: 'Sustainability', angle: -90, position: 'insideLeft', fill: '#8b99a8', fontSize: 11 }}
+                />
+                <ZAxis range={[60, 60]} />
+                <Tooltip
+                  contentStyle={{ background: '#162231', border: '1px solid #1e2d3d', borderRadius: 6, fontSize: 11 }}
+                  formatter={(value: unknown) => Number(value).toFixed(4)}
+                />
+                <Scatter
+                  name="Baseline"
+                  data={paretoData.map(d => ({ energy: d.baselineEnergy, sustainability: d.baselineSustainability, id: d.id }))}
+                  fill="#5c6b7a"
+                  onClick={(data: any) => setSelectedSample(data.id)}
+                >
+                  {paretoData.map((_, i) => (
+                    <Cell key={i} fill={i === selectedSample ? '#00e5ff' : '#5c6b7a'} r={i === selectedSample ? 8 : 5} />
+                  ))}
+                </Scatter>
+                <Scatter
+                  name="Optimized"
+                  data={paretoData.map(d => ({ energy: d.optEnergy, sustainability: d.optSustainability, id: d.id }))}
+                  fill="#ff6b35"
+                  onClick={(data: any) => setSelectedSample(data.id)}
+                >
+                  {paretoData.map((_, i) => (
+                    <Cell key={i} fill={i === selectedSample ? '#00e5ff' : '#ff6b35'} r={i === selectedSample ? 8 : 5} />
+                  ))}
+                </Scatter>
+                <Legend wrapperStyle={{ fontSize: 10 }} />
+              </ScatterChart>
+            </ResponsiveContainer>
+            <div className="opt-sensitivity-legend">
+              <span style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>
+                Each dot represents one fracture scenario. <strong style={{ color: '#5c6b7a' }}>Gray</strong> = baseline performance,{' '}
+                <strong style={{ color: '#ff6b35' }}>Orange</strong> = optimized performance.{' '}
+                <strong style={{ color: '#00e5ff' }}>Cyan</strong> = currently selected sample. Click any dot to select that sample.
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Parameter Sensitivity Analysis */}
+      {sensitivityData.length > 0 && (
+        <div className="opt-sensitivity-section">
+          <div className="opt-section-title">Parameter Sensitivity Analysis</div>
+          <ResponsiveContainer width="100%" height={160}>
+            <BarChart data={sensitivityData} layout="vertical" margin={{ top: 5, right: 30, left: 100, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#1e2d3d" />
+              <XAxis
+                type="number"
+                tick={{ fill: '#8b99a8', fontSize: 10 }}
+                label={{ value: 'Impact on Overall Score', position: 'bottom', fill: '#8b99a8', fontSize: 11, offset: -5 }}
+              />
+              <YAxis type="category" dataKey="name" tick={{ fill: '#8b99a8', fontSize: 10 }} width={100} />
+              <Tooltip
+                contentStyle={{ background: '#162231', border: '1px solid #1e2d3d', borderRadius: 6, fontSize: 11 }}
+              />
+              <ReferenceLine x={0} stroke="#1e2d3d" />
+              <Bar dataKey="contribution" radius={[0, 4, 4, 0]}>
+                {sensitivityData.map((d, i) => (
+                  <Cell key={i} fill={d.positive ? '#66bb6a' : '#ef5350'} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+          <div className="opt-sensitivity-legend">
+            <span style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>
+              Shows relative contribution of each injection well's rate adjustment to the overall score improvement.
+              <strong style={{ color: '#66bb6a' }}> Green</strong> = positive impact,
+              <strong style={{ color: '#ef5350' }}> Red</strong> = negative impact.
+            </span>
+          </div>
         </div>
       )}
     </div>

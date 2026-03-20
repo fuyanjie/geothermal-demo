@@ -383,6 +383,29 @@
   color: var(--color-text-secondary);
 }
 
+/* ---------- Pareto & Sensitivity sections ---------- */
+.opt-pareto-section, .opt-sensitivity-section {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  padding: 16px;
+}
+
+.opt-section-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.opt-sensitivity-legend {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--color-border);
+}
+
 /* spinner animation */
 .opt-spinner {
   animation: spin 1s linear infinite;

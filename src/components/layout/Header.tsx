@@ -3,7 +3,11 @@ import { wells } from '../../data';
 import { formatDate } from '../../utils/formatters';
 import './Header.css';
 
-export default function Header() {
+interface HeaderProps {
+  onStartTour?: () => void;
+}
+
+export default function Header({ onStartTour }: HeaderProps) {
   const { currentPage, selectedWellId, currentDate } = useAppState();
   const well = wells.find((w) => w.id === selectedWellId);
 
@@ -31,6 +35,11 @@ export default function Header() {
         <h2 className="header-title">{pageTitle}</h2>
         <span className="header-separator">—</span>
         <span className="header-location">{pageSubtitle}</span>
+        {onStartTour && (
+          <button className="header-tour-btn" onClick={onStartTour}>
+            Guided Tour
+          </button>
+        )}
       </div>
       {isExplorer && (
         <div className="header-right">

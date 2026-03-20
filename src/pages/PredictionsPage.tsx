@@ -22,6 +22,14 @@ export default function PredictionsPage() {
   const [inferring, setInferring] = useState(false);
   const [dataLoading, setDataLoading] = useState(true);
 
+  // UQ state
+  const [uqData, setUqData] = useState<{
+    mean: Float32Array;
+    stddev: Float32Array;
+    runs: number;
+  } | null>(null);
+  const [runningUQ, setRunningUQ] = useState(false);
+
   // Tab state
   const [activeTab, setActiveTab] = useState<'forward' | 'inverse'>('forward');
 
@@ -100,6 +108,11 @@ export default function PredictionsPage() {
       runPrediction();
     }
   }, [modelReady, testData, selectedSample, selectedTimestep, runPrediction]);
+
+  // Reset UQ data when sample or timestep changes
+  useEffect(() => {
+    setUqData(null);
+  }, [selectedSample, selectedTimestep]);
 
   // Stop auto-play when user manually changes sample
   useEffect(() => {
@@ -180,6 +193,17 @@ export default function PredictionsPage() {
     (v: number) => errorToColor(v, errorAbsMax),
     [errorAbsMax],
   );
+
+  const uqColorFn = useCallback((v: number) => {
+    if (!uqData) return [0, 0, 40] as [number, number, number];
+    const maxStd = Math.max(...Array.from(uqData.stddev)) || 0.01;
+    const t = Math.min(v / maxStd, 1);
+    // Dark blue -> cyan -> yellow
+    const r = Math.round(t * 255);
+    const g = Math.round(t * 220);
+    const b = Math.round((1 - t) * 180 + 40);
+    return [r, g, b] as [number, number, number];
+  }, [uqData]);
 
   // Loading state
   if (dataLoading) {
@@ -399,6 +423,104 @@ export default function PredictionsPage() {
             <div className="pred-metric-value">{prediction.r2.toFixed(4)}</div>
             <div className="pred-metric-label">R²</div>
           </div>
+        </div>
+      )}
+
+      {/* Uncertainty Quantification */}
+      {modelReady && fractureField && (
+        <div className="pred-uq-section">
+          <div className="pred-uq-title">Uncertainty Quantification</div>
+          <button
+            className="pred-uq-btn"
+            disabled={runningUQ || !modelReady}
+            onClick={async () => {
+              if (!fractureField || !testData) return;
+              setRunningUQ(true);
+              try {
+                const N = 10;
+                const { gridSize: gs, numTimesteps: nt } = testData.metadata;
+                const fieldSize = gs * gs;
+                const allPreds: Float32Array[] = [];
+
+                for (let i = 0; i < N; i++) {
+                  // Add Gaussian noise to fracture field
+                  const noisy = new Float32Array(fieldSize);
+                  for (let j = 0; j < fieldSize; j++) {
+                    // Box-Muller transform for Gaussian noise
+                    const u1 = Math.random();
+                    const u2 = Math.random();
+                    const z = Math.sqrt(-2 * Math.log(u1 || 1e-10)) * Math.cos(2 * Math.PI * u2);
+                    noisy[j] = fractureField[j] + z * 0.05;
+                  }
+                  const pred = await predict(noisy as unknown as Uint8Array, selectedTimestep, gs, nt);
+                  allPreds.push(pred);
+                }
+
+                // Compute pixel-wise mean and stddev
+                const mean = new Float32Array(fieldSize);
+                const stddev = new Float32Array(fieldSize);
+                for (let j = 0; j < fieldSize; j++) {
+                  let sum = 0;
+                  for (let i = 0; i < N; i++) sum += allPreds[i][j];
+                  mean[j] = sum / N;
+                  let sq = 0;
+                  for (let i = 0; i < N; i++) {
+                    const d = allPreds[i][j] - mean[j];
+                    sq += d * d;
+                  }
+                  stddev[j] = Math.sqrt(sq / N);
+                }
+
+                setUqData({ mean, stddev, runs: N });
+              } catch (err) {
+                console.error('UQ error:', err);
+              } finally {
+                setRunningUQ(false);
+              }
+            }}
+          >
+            {runningUQ ? 'Running...' : 'Run Uncertainty Analysis (N=10)'}
+          </button>
+
+          {uqData && (
+            <>
+              <div className="pred-uq-panels">
+                <div className="pred-uq-panel">
+                  <div className="pred-uq-panel-label">Mean Prediction</div>
+                  <HeatmapCanvas data={uqData.mean} gridSize={testData.metadata.gridSize} colorFn={tempColorFn} displaySize={160} />
+                </div>
+                <div className="pred-uq-panel">
+                  <div className="pred-uq-panel-label">Uncertainty (Std Dev)</div>
+                  <HeatmapCanvas data={uqData.stddev} gridSize={testData.metadata.gridSize} colorFn={uqColorFn} displaySize={160} />
+                  <div className="pred-legend pred-legend-gradient" style={{ maxWidth: 160 }}>
+                    <div
+                      className="pred-legend-bar"
+                      style={{
+                        background: 'linear-gradient(to right, #002840, #55b8dc, #ffdc00)',
+                      }}
+                    />
+                    <div className="pred-legend-labels">
+                      <span>0</span>
+                      <span>Std Dev</span>
+                      <span>{Math.max(...Array.from(uqData.stddev)).toFixed(4)}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="pred-uq-panel">
+                  <div className="pred-uq-panel-label">Ground Truth</div>
+                  {groundTruth && (
+                    <HeatmapCanvas data={groundTruth} gridSize={testData.metadata.gridSize} colorFn={tempColorFn} displaySize={160} />
+                  )}
+                </div>
+              </div>
+              <div className="pred-uq-summary">
+                <span>Mean MSE: <strong>{prediction ? computeMSE(uqData.mean, prediction.groundTruth).toFixed(6) : 'N/A'}</strong></span>
+                <span>Min Std Dev: <strong>{Math.min(...Array.from(uqData.stddev)).toFixed(6)}</strong></span>
+                <span>Max Std Dev: <strong>{Math.max(...Array.from(uqData.stddev)).toFixed(6)}</strong></span>
+                <span>Runs: <strong>{uqData.runs}</strong></span>
+              </div>
+            </>
+          )}
         </div>
       )}
 

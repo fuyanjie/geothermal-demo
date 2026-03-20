@@ -19,6 +19,28 @@
   --color-border: #1e2d3d;
   --border-radius: 8px;
   --panel-padding: 16px;
+
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  --color-bg-primary: #f5f7fa;
+  --color-bg-secondary: #ffffff;
+  --color-bg-sidebar: #ebeef2;
+  --color-text-primary: #1a2332;
+  --color-text-secondary: #5a6b7d;
+  --color-accent: #e05520;
+  --color-accent-hover: #c94a18;
+  --color-disabled: #b0bcc8;
+
+  --color-production: #0288d1;
+  --color-injection: #388e3c;
+  --color-temperature: #e64a19;
+  --color-pressure: #7b1fa2;
+
+  --color-border: #d4dae0;
+
+  color-scheme: light;
 }
 
 *,

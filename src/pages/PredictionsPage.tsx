@@ -6,6 +6,7 @@ import { computeMSE, computeMAE, computeR2, computeErrorField } from '../data/pr
 import { valueToColor, fractureToColor, errorToColor } from '../utils/colorScale';
 import HeatmapCanvas from '../components/predictions/HeatmapCanvas';
 import InverseModelingSection from '../components/predictions/InverseModelingSection';
+import TransferLearningSection from '../components/predictions/TransferLearningSection';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, ReferenceLine,
@@ -31,7 +32,7 @@ export default function PredictionsPage() {
   const [runningUQ, setRunningUQ] = useState(false);
 
   // Tab state
-  const [activeTab, setActiveTab] = useState<'forward' | 'inverse'>('forward');
+  const [activeTab, setActiveTab] = useState<'forward' | 'inverse' | 'transfer'>('forward');
 
   // Temporal dynamics state
   const [playing, setPlaying] = useState(false);
@@ -241,11 +242,22 @@ export default function PredictionsPage() {
         >
           Inverse Modeling
         </button>
+        <button
+          className={`pred-tab ${activeTab === 'transfer' ? 'active' : ''}`}
+          onClick={() => setActiveTab('transfer')}
+        >
+          Transfer Learning
+        </button>
       </div>
 
       {/* Inverse Modeling Tab */}
       {activeTab === 'inverse' && testData && (
         <InverseModelingSection testData={testData} modelReady={modelReady} />
+      )}
+
+      {/* Transfer Learning Tab */}
+      {activeTab === 'transfer' && testData && (
+        <TransferLearningSection testData={testData} modelReady={modelReady} />
       )}
 
       {/* Forward Prediction Tab */}

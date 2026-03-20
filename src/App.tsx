@@ -6,6 +6,7 @@ import DashboardLayout from './components/layout/DashboardLayout';
 import PredictionsPage from './pages/PredictionsPage';
 import OptimizationPage from './pages/OptimizationPage';
 import ResearchPage from './pages/ResearchPage';
+import DashboardPage from './pages/DashboardPage';
 import GuidedTour from './components/tour/GuidedTour';
 import './App.css';
 
@@ -14,6 +15,8 @@ function PageRouter() {
   switch (currentPage) {
     case 'research':
       return <ResearchPage />;
+    case 'dashboard':
+      return <DashboardPage />;
     case 'predictions':
       return <PredictionsPage />;
     case 'optimization':

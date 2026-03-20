@@ -1,0 +1,404 @@
+/* ---- Transfer Learning Section ---- */
+
+.tl-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Description banner */
+.tl-description {
+  padding: 12px 16px;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.tl-description strong {
+  color: var(--color-text-primary);
+}
+
+/* ---- Controls ---- */
+.tl-controls {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 12px 16px;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  flex-wrap: wrap;
+}
+
+.tl-control-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tl-slider-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-accent);
+  min-width: 36px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Side-by-side comparison ---- */
+.tl-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.tl-site-panel {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tl-site-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tl-site-badge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.tl-site-badge.source {
+  background: rgba(0, 229, 255, 0.15);
+  color: var(--color-accent);
+  border: 1px solid rgba(0, 229, 255, 0.3);
+}
+
+.tl-site-badge.target {
+  background: rgba(255, 152, 0, 0.15);
+  color: #ff9800;
+  border: 1px solid rgba(255, 152, 0, 0.3);
+}
+
+.tl-site-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.tl-heatmaps {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.tl-heatmap-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.tl-heatmap-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-secondary);
+}
+
+.tl-r2-display {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+}
+
+.tl-r2-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-secondary);
+}
+
+.tl-r2-value {
+  font-size: 18px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.tl-r2-value.good {
+  color: #4caf50;
+}
+
+.tl-r2-value.moderate {
+  color: #ff9800;
+}
+
+.tl-r2-value.poor {
+  color: #f44336;
+}
+
+/* ---- Fine-Tuning section ---- */
+.tl-finetuning {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tl-finetuning-title {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-secondary);
+}
+
+.tl-finetune-btn {
+  align-self: flex-start;
+  padding: 8px 20px;
+  background: var(--color-accent);
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+  white-space: nowrap;
+}
+
+.tl-finetune-btn:hover:not(:disabled) {
+  background: #33ebff;
+}
+
+.tl-finetune-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* ---- Before/After comparison cards ---- */
+.tl-comparison-cards {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.tl-card {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 20px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 160px;
+  transition: border-color 0.2s;
+}
+
+.tl-card.before {
+  border-color: rgba(244, 67, 54, 0.4);
+}
+
+.tl-card.after {
+  border-color: rgba(76, 175, 80, 0.4);
+}
+
+.tl-card.improvement {
+  border-color: rgba(0, 229, 255, 0.4);
+}
+
+.tl-card-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-secondary);
+}
+
+.tl-card-value {
+  font-size: 28px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.tl-card-value.before {
+  color: #f44336;
+}
+
+.tl-card-value.after {
+  color: #4caf50;
+}
+
+.tl-card-value.improvement {
+  color: var(--color-accent);
+}
+
+.tl-card-sublabel {
+  font-size: 10px;
+  color: var(--color-text-secondary);
+  opacity: 0.7;
+}
+
+/* ---- Bar chart ---- */
+.tl-barchart-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tl-barchart-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-secondary);
+}
+
+.tl-barchart {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  height: 140px;
+  padding: 12px;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+}
+
+.tl-bar-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.tl-bars {
+  display: flex;
+  gap: 3px;
+  align-items: flex-end;
+  height: 100%;
+}
+
+.tl-bar {
+  width: 20px;
+  border-radius: 3px 3px 0 0;
+  transition: height 0.3s ease;
+  min-height: 2px;
+}
+
+.tl-bar.before-bar {
+  background: rgba(244, 67, 54, 0.7);
+}
+
+.tl-bar.after-bar {
+  background: rgba(76, 175, 80, 0.8);
+}
+
+.tl-bar-label {
+  font-size: 9px;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.tl-bar-value {
+  font-size: 8px;
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ---- Legend for bar chart ---- */
+.tl-barchart-legend {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.tl-legend-entry {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: var(--color-text-secondary);
+}
+
+.tl-legend-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+.tl-legend-swatch.before-swatch {
+  background: rgba(244, 67, 54, 0.7);
+}
+
+.tl-legend-swatch.after-swatch {
+  background: rgba(76, 175, 80, 0.8);
+}
+
+/* ---- Progress ---- */
+.tl-progress-bar {
+  width: 100%;
+  height: 4px;
+  background: var(--color-bg-secondary);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.tl-progress-fill {
+  height: 100%;
+  background: var(--color-accent);
+  border-radius: 2px;
+  transition: width 0.15s ease-out;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 960px) {
+  .tl-comparison {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .tl-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tl-comparison-cards {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tl-card {
+    min-width: 0;
+  }
+}

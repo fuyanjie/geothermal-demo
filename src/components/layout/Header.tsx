@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useAppState } from '../../context/AppStateContext';
 import { wells } from '../../data';
 import { formatDate } from '../../utils/formatters';
@@ -13,14 +14,34 @@ export default function Header({ onStartTour }: HeaderProps) {
 
   const isExplorer = currentPage === 'explorer';
 
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    const saved = localStorage.getItem('geothermal-theme');
+    return saved === 'light' ? 'light' : 'dark';
+  });
+
+  useEffect(() => {
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+    localStorage.setItem('geothermal-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
+
   const pageTitles: Record<string, string> = {
     research: 'Research',
+    dashboard: 'Dashboard',
     explorer: 'Data Explorer',
     predictions: 'Predictions',
     optimization: 'Optimization',
   };
   const pageSubtitles: Record<string, string> = {
     research: 'Knowledge-Guided Generative AI for Geothermal Energy',
+    dashboard: 'System Overview & Key Metrics',
     explorer: 'Brady Hot Springs Geothermal Field, Nevada',
     predictions: 'Surrogate Model — Fracture → Temperature',
     optimization: 'Injection Rate Optimization',
@@ -40,6 +61,9 @@ export default function Header({ onStartTour }: HeaderProps) {
             Guided Tour
           </button>
         )}
+        <button className="header-theme-btn" onClick={toggleTheme}>
+          {theme === 'dark' ? '\u2600\uFE0F Light' : '\uD83C\uDF19 Dark'}
+        </button>
       </div>
       {isExplorer && (
         <div className="header-right">

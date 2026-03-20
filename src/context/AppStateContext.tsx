@@ -3,7 +3,7 @@ import type { SubsurfaceField } from '../types';
 import type { WellTimeSeries, SubsurfaceData } from '../types';
 import { wells, loadAllTimeSeries, generateSubsurfaceData, getCachedDates } from '../data';
 
-export type PageId = 'research' | 'explorer' | 'predictions' | 'optimization';
+export type PageId = 'research' | 'dashboard' | 'explorer' | 'predictions' | 'optimization';
 
 interface AppState {
   currentPage: PageId;

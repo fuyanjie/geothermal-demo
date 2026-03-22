@@ -29,13 +29,18 @@ function PageRouter() {
 
 function AppContent() {
   const [tourActive, setTourActive] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <>
       <div className="app-shell">
-        <Sidebar />
+        <Sidebar open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
+        {mobileMenuOpen && <div className="mobile-overlay" onClick={() => setMobileMenuOpen(false)} />}
         <main className="app-main">
-          <Header onStartTour={() => setTourActive(true)} />
+          <Header
+            onStartTour={() => setTourActive(true)}
+            onToggleMenu={() => setMobileMenuOpen((v) => !v)}
+          />
           <PageRouter />
         </main>
       </div>

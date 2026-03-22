@@ -415,3 +415,33 @@
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+/* ---- Mobile ---- */
+@media (max-width: 768px) {
+  .optimization-page {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .opt-controls {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .opt-comparison {
+    flex-direction: column;
+  }
+
+  .opt-kpis {
+    flex-wrap: wrap;
+  }
+
+  .opt-kpi-card {
+    min-width: 80px;
+    flex: 1;
+  }
+
+  .opt-sliders-panel {
+    max-height: 300px;
+  }
+}

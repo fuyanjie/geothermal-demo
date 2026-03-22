@@ -88,3 +88,56 @@
   background: var(--color-text-secondary);
   color: var(--color-bg-primary);
 }
+
+/* hamburger button — hidden on desktop */
+.header-menu-btn {
+  display: none;
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  color: var(--color-text-primary);
+  font-size: 18px;
+  padding: 4px 8px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+@media (max-width: 768px) {
+  .header-menu-btn {
+    display: flex;
+  }
+
+  .header {
+    padding: 0 12px;
+  }
+
+  .header-left {
+    gap: 6px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .header-title {
+    font-size: 14px;
+  }
+
+  .header-separator,
+  .header-location {
+    display: none;
+  }
+
+  .header-tour-btn,
+  .header-theme-btn {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+
+  .header-right {
+    gap: 8px;
+  }
+
+  .header-well,
+  .header-date {
+    font-size: 11px;
+  }
+}

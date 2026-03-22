@@ -478,3 +478,57 @@
 .pred-uq-summary strong {
   color: var(--color-text-primary);
 }
+
+/* ---- Mobile ---- */
+@media (max-width: 768px) {
+  .predictions-page {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .pred-tabs {
+    width: 100%;
+  }
+
+  .pred-tab {
+    flex: 1;
+    padding: 8px 8px;
+    font-size: 11px;
+    text-align: center;
+  }
+
+  .pred-controls {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .pred-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pred-panel {
+    max-width: 100%;
+  }
+
+  .pred-metrics {
+    flex-wrap: wrap;
+  }
+
+  .pred-thumbnails {
+    max-width: 100%;
+  }
+
+  .pred-uq-panels {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .pred-uq-summary {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .pred-physics-cards {
+    flex-direction: column;
+  }
+}

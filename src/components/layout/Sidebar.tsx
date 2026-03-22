@@ -16,11 +16,16 @@ const navItems: NavItem[] = [
   { id: 'optimization', label: 'Optimization', enabled: true, icon: '⚙️' },
 ];
 
-export default function Sidebar() {
+interface SidebarProps {
+  open?: boolean;
+  onClose?: () => void;
+}
+
+export default function Sidebar({ open, onClose }: SidebarProps) {
   const { currentPage, setCurrentPage } = useAppState();
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar${open ? ' sidebar-open' : ''}`}>
       <div className="sidebar-brand">
         <h1 className="sidebar-title">Geothermal AI</h1>
         <p className="sidebar-subtitle">Brady Hot Springs</p>
@@ -34,6 +39,7 @@ export default function Sidebar() {
             onClick={() => {
               if (item.enabled) {
                 setCurrentPage(item.id);
+                onClose?.();
               }
             }}
           >

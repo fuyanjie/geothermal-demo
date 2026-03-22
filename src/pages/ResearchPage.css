@@ -321,6 +321,21 @@
   }
 }
 
+@media (max-width: 768px) {
+  .research-page {
+    padding: 12px;
+    gap: 16px;
+  }
+
+  .research-hero {
+    padding: 20px;
+  }
+
+  .research-hero-title {
+    font-size: 18px;
+  }
+}
+
 /* ---------- acknowledgment ---------- */
 .research-ack {
   font-size: 12px;

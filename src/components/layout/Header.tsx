@@ -6,9 +6,10 @@ import './Header.css';
 
 interface HeaderProps {
   onStartTour?: () => void;
+  onToggleMenu?: () => void;
 }
 
-export default function Header({ onStartTour }: HeaderProps) {
+export default function Header({ onStartTour, onToggleMenu }: HeaderProps) {
   const { currentPage, selectedWellId, currentDate } = useAppState();
   const well = wells.find((w) => w.id === selectedWellId);
 
@@ -53,6 +54,11 @@ export default function Header({ onStartTour }: HeaderProps) {
   return (
     <header className="header">
       <div className="header-left">
+        {onToggleMenu && (
+          <button className="header-menu-btn" onClick={onToggleMenu} aria-label="Menu">
+            ☰
+          </button>
+        )}
         <h2 className="header-title">{pageTitle}</h2>
         <span className="header-separator">—</span>
         <span className="header-location">{pageSubtitle}</span>

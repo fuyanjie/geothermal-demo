@@ -211,3 +211,35 @@
   font-weight: 500;
   color: var(--color-accent);
 }
+
+/* ---- Mobile ---- */
+@media (max-width: 768px) {
+  .dashboard-page {
+    padding: 12px;
+  }
+
+  .dashboard-kpi-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .dashboard-kpi-value {
+    font-size: 32px;
+  }
+
+  .dashboard-pipeline {
+    flex-direction: column;
+    padding: 16px;
+    gap: 4px;
+  }
+
+  .dashboard-pipeline-arrow {
+    transform: rotate(90deg);
+    margin: 4px 0;
+  }
+
+  .dashboard-tier-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
